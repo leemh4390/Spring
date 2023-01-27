@@ -1,6 +1,5 @@
 <th:block th:include="@{_header}"/>
 <script>
-
 //데이터 검증에 사용할 정규표현식
 let regUid   = /^[a-z]+[a-z0-9]{4,19}$/g;
 let regName  = /^[가-힣]{2,4}$/;
@@ -13,9 +12,7 @@ let regPass  = /^.*(?=^.{5,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
 let isUidOk   = false;
 let isPassOk  = false;
 let isNameOk  = false;
-let isNickOk  = false;
-let isEmailOk = false;
-let isHpOk    = false;	
+let isNickOk  = false;	
 
 	$(document).ready(function(){
 		
@@ -56,12 +53,97 @@ let isHpOk    = false;
 		
 		$('input[name=pass2]').focusout(function(){
 			
+			let pass1 = $('input[name=pass1]').val();
+			let pass2 = $(this).val();
+			
+			if(pass1 == pass2){
+				if(pass2.match(regPass)){
+					isPassOk = true;
+					$('.resultPass').css('color','green').text('사용가능한 비밀번호입니다.');
+				}else{
+					isPassOk = false;
+					$('.resultPass').css('color','red').text('유효하지 않은 비밀번호입니다.');
+				}
+			}else{
+				isPassOk = false;
+				$('.resultPass').css('color','red').text('비밀번호가 일치하지 않습니다.');
+			}
+		});
+		
+		// 이름 유효성 검사
+		$('input[name=name]').focusout(function(){
+			
+			let name = $(this).val();
+			
+			if(name.match(regName)){
+				isNameOk = true;
+			}else{
+				isNameOk = false;
+			}
+		});
+		
+		// 별명 유효성 검사 & 중복체크
+		$('.btnNickCheck').keydown(function(){
+			isNickOk = false;
+		});
+		
+		$('.btnNickCheck').click(function(){
+			let nick = $('input[name=nick]').val();
+			
+			if(isNickOk){
+				return;
+			}
+			
+			if(!nick.match(regNick)){
+				isNickOk = false;
+				$('.resultNick').css('color','red').text('유효하지 않는 닉네임입니다.');
+			}else{
+				$.ajax({
+					url : '/Farmstory2/user/countNick',
+					method : 'GET',
+					data : {'nick' : nick},
+					dataType : 'json',
+					success : function(data){
+						if(data.result == 0){
+							isNickOk = true;
+							$('.resultNick').css('color', 'green').text('사용 가능한 별명 입니다.');
+						}else{
+							isNickOk = false;
+							$('.resultNick').css('color', 'red').text('이미 사용중인 별명 입니다.');
+						}
+					}
+				});
+			}
+		});
+		
+		$('.register > form').submit(function(){
+			
+			if(!isUidOk){
+				alert('아이디를 확인 하십시요.');
+				return false;
+			}
+			
+			// 비밀번호 검증
+			if(!isPassOk){
+				alert('비밀번호를 확인 하십시요.');
+				return false;
+			}
+			// 이름 검증
+			if(!isNameOk){
+				alert('이름을 확인 하십시요.');
+				return false;
+			}
+			// 별명 검증
+			if(!isNickOk){
+				alert('별명을 확인 하십시요.');
+				return false;
+			}			
 		});
 	});
 
 </script>
         <main id="user" class="register">
-            <form action="#">
+            <form th:action="@{/user/register}" method="post">
                 <table border="1">
                     <caption>사이트 이용정보 입력</caption>
                     <tr>
@@ -76,13 +158,13 @@ let isHpOk    = false;
                         <th>비밀번호</th>
                         <td>
                             <input type="password" name="pass1" placeholder="비밀번호 입력"/>
-                            <span class="resultPass"></span>
                         </td>
                     </tr>
                     <tr>
                         <th>비밀번호 확인</th>
                         <td>
                             <input type="password" name="pass2" placeholder="비밀번호 입력 확인"/>
+                            <span class="resultPass"></span>
                         </td>
                     </tr>
                 </table>
@@ -100,7 +182,7 @@ let isHpOk    = false;
                         <td>
                             <p>공백없이 한글, 영문, 숫자 입력</p>
                             <input type="text" name="nick" placeholder="별명 입력"/>
-                            <button type="button"><img src="../img/chk_id.gif" alt="중복확인"/></button>
+                            <button type="button" class="btnNickCheck"><img src="../img/chk_id.gif" alt="중복확인"/></button>
                             <span class="resultNick"></span>
                         </td>
                     </tr>                    

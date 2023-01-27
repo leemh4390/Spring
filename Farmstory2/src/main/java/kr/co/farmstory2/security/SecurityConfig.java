@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
@@ -22,9 +23,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		http.authorizeRequests().antMatchers("/view").hasAnyRole("3", "4", "5");
 		http.authorizeRequests().antMatchers("/modify").hasAnyRole("3", "4", "5");
 		
-		//사이트 위조 방지
+		// 사이트 위조 방지
 		http.csrf().disable();
 		
+		// 로그인 설정
+		http.formLogin()
+		.loginPage("/user/login")
+		.defaultSuccessUrl("/")
+		.failureUrl("/user/login?success=100")
+		.usernameParameter("uid")
+		.passwordParameter("pass");
+		
+		// 로그아웃 설정
+		http.logout()
+		.invalidateHttpSession(true)
+		.logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
+		.logoutSuccessUrl("/user/login?success=200");
 	}
 	
 	@Autowired
@@ -33,6 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		
+		// 로그인 인증 처리 서비스, 암호화 방식
 		auth.userDetailsService(service).passwordEncoder(new BCryptPasswordEncoder());
 	}
 	

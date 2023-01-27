@@ -1,6 +1,6 @@
 <th:block th:include="@{_header}"/>
         <main id="board" class="write">
-            <form action="#">
+            <form th:action="@{/board/write}" method="post">
                 <table border="0">
                     <caption>글쓰기</caption>
                     <tr>

@@ -25,30 +25,24 @@ public class BoardController {
 		return "board/list";
 	}
 	
-	@GetMapping("/board/write")
-	public String write() {
-		return "/board/write";
-	}	
-	
-	
-	
-	@GetMapping("/market/market")
-	public String market() {
-		return "/market/market";
-	}
-	
-	@GetMapping("/croptalk/story")
-	public String croptalk() {
-		return "/croptalk/story";
-	}
-	
-	@GetMapping("/event/evnet")
-	public String event() {
-		return "/event/evnet";
-	}
-	
-	@GetMapping("/community/notice")
-	public String commnuity() {
-		return "/community/notice";
-	}
+    @GetMapping("board/modify")
+    public String modify(Model model, String group, String cate){
+        model.addAttribute("group", group);
+        model.addAttribute("cate", cate);
+        return "board/modify";
+    }
+
+    @GetMapping("board/view")
+    public String view(Model model, String group, String cate){
+        model.addAttribute("group", group);
+        model.addAttribute("cate", cate);
+        return "board/view";
+    }
+
+    @GetMapping("board/write")
+    public String write(Model model, String group, String cate){
+        model.addAttribute("group", group);
+        model.addAttribute("cate", cate);
+        return "board/write";
+    }
 }
