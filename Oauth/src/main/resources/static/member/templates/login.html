@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>naver</title>
+</head>
+<style>
+
+    .naver-form {
+        border: 0px solid;
+        padding: 50px;
+        width: 350px;
+        height: 200px;
+    }
+
+    .naver-form > div {
+        padding: 10px;
+        border: 0px solid red;
+    }
+
+    .naver-form > div > input:nth-child(1),:nth-child(2) {
+        margin-bottom: 5px;
+        padding: 10px;
+    }
+
+    input[type=submit] {
+        position: absolute;
+        margin-left: 5px;
+        margin-bottom: -20px;
+        padding: 10px;
+        margin-top: -25px;
+    }
+
+    .sns-login {}
+
+</style>
+<body>
+    <div id="wrapper">
+        <form action="" class="naver-form">
+            <h3>로그인</h3>
+            <div>
+                <input type="text" placeholder="아이디">
+                <input type="password" placeholder="비밀번호">
+                <input type="submit" value="로그인">
+            </div>
+            <div class="sns-login">
+                <a href="">네이버로 로그인</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
